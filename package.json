@@ -6,8 +6,12 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "vercel-build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "engines": {
+    "node": "18.x"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
