@@ -1,3 +1,4 @@
+// backend/src/server.js
 require('dotenv').config()
 const fs = require('fs')
 const path = require('path')
@@ -7,6 +8,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
 const mongoose = require('mongoose')
+const cookieParser = require('cookie-parser')
 const routes = require('./routes')
 
 const app = express()
@@ -24,32 +26,22 @@ try {
 
 // Middlewares
 app.use(helmet())
-app.use(express.json({ limit: '8mb' }))
-app.use(express.urlencoded({ extended: true, limit: '8mb' }))
+app.use(express.json({ limit: '5mb' }))
+app.use(express.urlencoded({ extended: true, limit: '5mb' }))
 app.use(morgan('dev'))
+app.use(cookieParser())
 
-// CORS: support comma-separated list in env or '*' fallback
-const rawOrigins = (process.env.CORS_ORIGIN || '*').split(',').map(s => s.trim()).filter(Boolean)
-if (rawOrigins.length === 1 && rawOrigins[0] === '*') {
-  app.use(cors())
-  console.log('CORS: allowing all origins (*)')
-} else {
-  app.use(cors({
-    origin: function(origin, callback){
-      // allow non-browser (postman / server) requests with no origin
-      if (!origin) return callback(null, true)
-      if (rawOrigins.includes(origin)) return callback(null, true)
-      return callback(new Error('CORS not allowed'), false)
-    }
-  }))
-  console.log('CORS origins:', rawOrigins)
-}
+// CORS — IMPORTANT: allow credentials and exact origin
+const FRONTEND_ORIGIN = process.env.CORS_ORIGIN || 'https://form-builder-nine-tau.vercel.app'
+app.use(cors({
+  origin: FRONTEND_ORIGIN,
+  credentials: true,
+}))
 
 // Rate limiter (basic)
 const limiter = rateLimit({ windowMs: 60 * 1000, max: 120 }) // 120 requests per minute
 app.use(limiter)
 
-// Serve uploaded files
 app.use('/uploads', express.static(uploadsDir))
 
 // Connect MongoDB
