@@ -88,6 +88,7 @@ export default function Dashboard() {
                     loadDraftsFromLocalStorage()
                     setShowDrafts(s => !s)
                   }}
+                  style={{background: 'transparent', border: 'none', fontSize: 16, cursor: 'pointer', marginBottom: 0}}
                 >
                   Drafts
                 </button>

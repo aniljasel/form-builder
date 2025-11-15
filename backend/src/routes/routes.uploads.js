@@ -25,12 +25,16 @@ const upload = multer({
 
 // single file upload
 router.post('/', upload.single('file'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'no file' })
-  // Build public URL - assumes server serves /uploads statically
-  const host = req.protocol + '://' + req.get('host')
-  const url = `${host}/uploads/${encodeURIComponent(req.file.filename)}`
-
-  res.json({ ok: true, url, filename: req.file.filename, originalname: req.file.originalname })
+  try {
+    if (!req.file) return res.status(400).json({ error: 'no file' })
+    // Build public URL - assumes server serves /uploads statically
+    const host = req.protocol + '://' + req.get('host')
+    const url = `${host}/uploads/${encodeURIComponent(req.file.filename)}`
+    res.json({ ok: true, url, filename: req.file.filename, originalname: req.file.originalname })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'upload failed' })
+  }
 })
 
 module.exports = router

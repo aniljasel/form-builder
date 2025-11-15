@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const FieldSchema = new Schema({
-  id: { type: String, required: true },    
-  type: { type: String, required: true },   
+  id: { type: String, required: true },
+  type: { type: String, required: true },
   label: String,
   placeholder: String,
   required: { type: Boolean, default: false },
