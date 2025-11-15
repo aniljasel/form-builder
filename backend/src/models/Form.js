@@ -30,4 +30,14 @@ FormSchema.pre('save', function(next) {
   next()
 })
 
+const UserSchema = new Schema({
+  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  password: { type: String, required: true }, // hashed password (bcrypt)
+  name: String,
+  role: { type: String, default: 'admin' },
+  isAdmin: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
+})
+
+
 module.exports = mongoose.model('Form', FormSchema)
